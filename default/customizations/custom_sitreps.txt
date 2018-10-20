@@ -253,11 +253,35 @@ ETA_NEXT_TURN
 //             ]
 //             empire = Source.Owner
 
+//#####     TUTORIAL HINTS     #####//
+
+EffectsGroup
+    scope = Source
+    activation = Turn low = 1 high = 1
+    effects = [
+        GenerateSitrepMessage
+            message = "SITREP_TUTORIAL_FLEET_INTRO"
+            label = "TUTORIAL_HINTS"
+            icon = "icons/sitrep/beginner_hint.png"
+            empire = Source.Owner
+    ]
+
+EffectsGroup
+    scope = Source
+    activation = Turn low = 3 high = 3
+    effects = [
+        GenerateSitrepMessage
+            message = "SITREP_TUTORIAL_FOCUS"
+            label = "TUTORIAL_HINTS"
+            icon = "icons/sitrep/beginner_hint.png"
+            empire = Source.Owner
+    ]
+
 //#####     RANDOM BEGINNER HINTS     #####//
 
 EffectsGroup
     scope = Source
-    activation = Turn low = 0 high = 100
+    activation = Turn low = 4 high = 100
     stackinggroup = "HINTSSYSTEM"
     effects = [
         GenerateSitrepMessage

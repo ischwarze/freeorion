@@ -216,6 +216,7 @@
     (MaxFuel)                                   \
     (MaximumNumberOf)                           \
     (MaxShield)                                 \
+    (MaxShow)                                   \
     (MaxStockpile)                              \
     (MaxStructure)                              \
     (MaxSupply)                                 \

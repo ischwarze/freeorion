@@ -55,6 +55,15 @@ std::string SitRepEntry::Dump() const {
     return retval;
 }
 
+SitRepEntry CreateTutorialSitRep(const char* sitrep_name) {
+    SitRepEntry sitrep(
+        UserStringNop(sitrep_name),
+        CurrentTurn() + 1,
+        "icons/sitrep/beginner_hint.png",
+        UserStringNop("TUTORIAL_HINTS"), true);
+    return sitrep;
+}
+
 SitRepEntry CreateTechResearchedSitRep(const std::string& tech_name) {
     SitRepEntry sitrep(
         UserStringNop("SITREP_TECH_RESEARCHED"),

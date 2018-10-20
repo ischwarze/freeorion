@@ -1387,6 +1387,18 @@ void Empire::AddBuildingType(const std::string& name) {
         return;
     m_available_building_types.insert(name);
     AddSitRepEntry(CreateBuildingTypeUnlockedSitRep(name));
+
+    // Decide whether to show a tutorial sitrep about building production.
+    auto count = m_available_building_types.size();
+    auto& initial = GetUniverse().InitiallyUnlockedItems();
+    for (auto item = initial.cbegin(); item != initial.cend(); item++)
+        if (item->type == UIT_BUILDING)
+            if (--count == 0)
+                break;
+    if (count == 1)
+        AddSitRepEntry(CreateTutorialSitRep("SITREP_TUTORIAL_PRODUCTION_INTRO"));
+    else if (name == "BLD_SHIPYARD_BASE")
+        AddSitRepEntry(CreateTutorialSitRep("SITREP_TUTORIAL_PRODUCTION_YARD"));
 }
 
 void Empire::AddPartType(const std::string& name) {
@@ -1399,6 +1411,30 @@ void Empire::AddPartType(const std::string& name) {
         return;
     m_available_part_types.insert(name);
     AddSitRepEntry(CreateShipPartUnlockedSitRep(name));
+
+    // Decide whether to show the tutorial sitrep
+    // about building outpost or colony ships.
+    if (name == "CO_OUTPOST_POD") {
+        DebugLogger() << "Empire::AddPartType CO_OUTPOST_POD";
+        if (m_available_part_types.find("CO_COLONY_POD") != m_available_part_types.end())
+            return;
+    } else if (name == "CO_COLONY_POD") {
+        DebugLogger() << "Empire::AddPartType CO_COLONY_POD";
+        if (m_available_part_types.find("CO_OUTPOST_POD") != m_available_part_types.end())
+            return;
+    } else
+            return;
+    for (auto hull_name = m_available_hull_types.cbegin();
+            hull_name != m_available_hull_types.cend(); hull_name++) {
+        const HullType* hull_type = GetHullType(*hull_name);
+        DebugLogger() << "Empire::AddPartType " << *hull_name << " (" <<
+            hull_type->Fuel() << ", " <<
+            hull_type->NumSlots(SL_INTERNAL) << ")";
+        if (hull_type->Fuel() && hull_type->NumSlots(SL_INTERNAL)) {
+            AddSitRepEntry(CreateTutorialSitRep("SITREP_TUTORIAL_PRODUCTION_COLONY"));
+            break;
+        }
+    }
 }
 
 void Empire::AddHullType(const std::string& name) {
@@ -1409,6 +1445,43 @@ void Empire::AddHullType(const std::string& name) {
     }
     if (!hull_type->Producible())
         return;
+
+    // Decide whether to show the tutorial sitrep about building ships.
+    // Test size == 1 because SH_COLONY_BASE is already known.
+    if (m_available_hull_types.size() == 1)
+        AddSitRepEntry(CreateTutorialSitRep("SITREP_TUTORIAL_PRODUCTION_SHIP"));
+
+    // Decide whether to show the tutorial sitrep
+    // about building outpost or colony ships.
+    bool show = false;
+    for (auto part = m_available_part_types.cbegin();
+            part != m_available_part_types.cend(); part++) {
+        if (*part == "CO_OUTPOST_POD" || *part == "CO_COLONY_POD") {
+            DebugLogger() << "Empire::AddHullType " << name << ": " <<
+                *part << " is known";
+            show = true;
+            break;
+        }
+    }
+    if (!show)
+        DebugLogger() << "Empire::AddHullType " << name << ": cannot colonize";
+    else if (!hull_type->NumSlots(SL_INTERNAL))
+        DebugLogger() << "Empire::AddHullType " << name << ": no internal slot";
+    if (show && hull_type->NumSlots(SL_INTERNAL)) {
+        for (auto other_name = m_available_hull_types.cbegin();
+                other_name != m_available_hull_types.cend(); other_name++) {
+           const HullType* other_type = GetHullType(*other_name);
+           if (other_type->Fuel() && other_type->NumSlots(SL_INTERNAL)) {
+                DebugLogger() << "Empire::AddHullType: already known: "
+                    << *other_name;
+                show = false;
+                break;
+            }
+        }
+        if (show)
+            AddSitRepEntry(CreateTutorialSitRep("SITREP_TUTORIAL_PRODUCTION_COLONY"));
+    }
+
     m_available_hull_types.insert(name);
     AddSitRepEntry(CreateShipHullUnlockedSitRep(name));
 }

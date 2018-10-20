@@ -904,19 +904,23 @@ public:
                           MessageParams&& message_parameters,
                           std::unique_ptr<ValueRef::ValueRefBase<int>>&& recipient_empire_id,
                           EmpireAffiliationType affiliation,
+                          int maxshow,
                           const std::string label = "",
                           bool stringtable_lookup = true);
     GenerateSitRepMessage(const std::string& message_string, const std::string& icon,
                           MessageParams&& message_parameters,
                           EmpireAffiliationType affiliation,
                           std::unique_ptr<Condition::ConditionBase>&& condition,
+                          int maxshow,
                           const std::string label = "",
                           bool stringtable_lookup = true);
     GenerateSitRepMessage(const std::string& message_string, const std::string& icon,
                           MessageParams&& message_parameters,
                           EmpireAffiliationType affiliation,
+                          int maxshow,
                           const std::string& label = "",
                           bool stringtable_lookup = true);
+    ~GenerateSitRepMessage();
 
     void                Execute(const ScriptingContext& context) const override;
     bool                IsSitrepEffect() const override     { return true; }
@@ -942,6 +946,8 @@ private:
     std::unique_ptr<Condition::ConditionBase>
                             m_condition;
     EmpireAffiliationType   m_affiliation;
+    int                     m_maxshow;
+    std::map<int, int>*     m_shown;
     std::string             m_label;
     bool                    m_stringtable_lookup;
 

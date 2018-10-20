@@ -8,6 +8,19 @@ Part
     buildtime = 3
     tags = [ "PEDIA_PC_COLONY" ]
     location = OwnedBy empire = Source.Owner
+    effectsgroups = [
+        EffectsGroup
+            scope = Source
+            activation = Source
+            effects = [
+                GenerateSitrepMessage
+                    message = "SITREP_TUTORIAL_OUTPOST_POD"
+                    label = "TUTORIAL_HINTS"
+                    icon = "icons/sitrep/beginner_hint.png"
+                    maxshow = 1
+                    empire = Source.Owner
+            ]
+    ]
     icon = "icons/ship_parts/habitation_domes.png"
 
 #include "/scripting/common/upkeep.macros"

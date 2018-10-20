@@ -3073,6 +3073,8 @@ void ServerApp::PreCombatProcessTurns() {
         if (fleet)
             fleet->ClearArrivalFlag();
     }
+
+  if (m_current_turn > 1) {
     // first move unowned fleets, or an empire fleet landing on them could wrongly
     // blockade them before they move
     for (auto& fleet : fleets) {
@@ -3085,6 +3087,7 @@ void ServerApp::PreCombatProcessTurns() {
         if (fleet && !fleet->Unowned())
             fleet->MovementPhase();
     }
+  }
 
     // post-movement visibility update
     m_universe.UpdateEmpireObjectVisibilities();
