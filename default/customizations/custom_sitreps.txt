@@ -281,6 +281,7 @@ EffectsGroup
 
 EffectsGroup
     scope = Source
+    // The first 3 turns typically show tutorial sitreps, so start after that.
     activation = Turn low = 4 high = 100
     stackinggroup = "HINTSSYSTEM"
     effects = [
