@@ -310,9 +310,9 @@ def generate_production_orders():
             debug('')
             queued_building_names = [bldg.name for bldg in capital_queued_buildings]
 
-            building_expense += maybe_enqueue_capital_building(possible_building_types, "BLD_AUTO_HISTORY_ANALYSER", "BLD_CULTURE_ARCHIVES");
-            building_expense += maybe_enqueue_capital_building(possible_building_types, "BLD_IMPERIAL_WORKSHOPS", "BLD_CULTURE_ARCHIVES");
-            building_expense += maybe_enqueue_capital_building(possible_building_types, "BLD_IMPERIAL_GARDENS", "BLD_IMPERIAL_PALACE");
+            building_expense += maybe_enqueue_capital_building(possible_building_types, "BLD_AUTO_HISTORY_ANALYSER", "BLD_CULTURE_ARCHIVES")
+            building_expense += maybe_enqueue_capital_building(possible_building_types, "BLD_IMPERIAL_WORKSHOPS", "BLD_CULTURE_ARCHIVES")
+            building_expense += maybe_enqueue_capital_building(possible_building_types, "BLD_IMPERIAL_GARDENS", "BLD_IMPERIAL_PALACE")
 
             # TODO: check existence of BLD_INDUSTRY_CENTER (and other buildings) in other locations in case we captured it
             if (total_pp > 40 or ((current_turn > 40) and (state.population_with_industry_focus() >= 20))) and ("BLD_INDUSTRY_CENTER" in possible_building_types) and ("BLD_INDUSTRY_CENTER" not in (capital_buildings+queued_building_names)) and (building_expense < building_ratio*total_pp):
@@ -1586,21 +1586,23 @@ def find_capital_candidates(bld_to_build, bld_needed):
         chosen_locations.append(possible_locations.pop())
     return chosen_locations
 
+
 def maybe_enqueue_capital_building(possible_building_types, bld_to_build, bld_needed):
-    retval = 0;
+    retval = 0
     if bld_to_build in possible_building_types:
         universe = fo.getUniverse()
         empire = fo.getEmpire()
         production_queue = empire.productionQueue
         for pid in find_capital_candidates(bld_to_build, bld_needed):
-           res = fo.issueEnqueueBuildingProductionOrder(bld_to_build, pid)
-           debug("Enqueueing %s at planet %s - result %d" % (bld_to_build, universe.getPlanet(pid), res))
-           if res:
-               cost, time = empire.productionCostAndTime(production_queue[production_queue.size - 1])
-               retval += cost / time;
-               res = fo.issueRequeueProductionOrder(production_queue.size - 1, 0)  # move to front
-               debug("Requeueing %s to front of build queue, with result %d" % (bld_to_build, res))
+            res = fo.issueEnqueueBuildingProductionOrder(bld_to_build, pid)
+            debug("Enqueueing %s at planet %s - result %d" % (bld_to_build, universe.getPlanet(pid), res))
+            if res:
+                cost, time = empire.productionCostAndTime(production_queue[production_queue.size - 1])
+                retval += cost / time
+                res = fo.issueRequeueProductionOrder(production_queue.size - 1, 0)  # move to front
+                debug("Requeueing %s to front of build queue, with result %d" % (bld_to_build, res))
     return retval
+
 
 def get_number_of_queued_outpost_and_colony_ships():
     """Get the total number of queued outpost/colony ships/bases.
