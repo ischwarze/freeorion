@@ -86,6 +86,8 @@ namespace {
 
     typedef std::set<int> IntSet;
 
+    typedef std::map<std::string, int> String_IntMap;
+
     typedef std::map<std::pair<int, int>,int > PairIntInt_IntMap;
 
     std::vector<IntPair> obstructedStarlanesP(const Empire& empire) {
@@ -258,6 +260,10 @@ namespace FreeOrionPython {
             .def(boost::python::map_indexing_suite<PairIntInt_IntMap, true>())
         ;
 
+        class_<String_IntMap>("String_IntMap")
+            .def(boost::python::map_indexing_suite<String_IntMap, true>())
+        ;
+
         boost::python::to_python_converter<IntPair, myIntIntPairConverter>();
 
         class_<std::vector<IntPair>>("IntPairVec")
@@ -317,6 +323,7 @@ namespace FreeOrionPython {
                                                     ))
 
             .def("techResearched",                  &Empire::TechResearched)
+            .add_property("researchedTechs",        make_function(&Empire::ResearchedTechs,         return_internal_reference<>()))
             .add_property("availableTechs",         make_function(
                                                         ResearchTechNamesFunc,
                                                         return_value_policy<return_by_value>(),

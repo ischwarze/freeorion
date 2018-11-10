@@ -1446,11 +1446,6 @@ void Empire::AddHullType(const std::string& name) {
     if (!hull_type->Producible())
         return;
 
-    // Decide whether to show the tutorial sitrep about building ships.
-    // Test size == 1 because SH_COLONY_BASE is already known.
-    if (m_available_hull_types.size() == 1)
-        AddSitRepEntry(CreateTutorialSitRep("SITREP_TUTORIAL_PRODUCTION_SHIP"));
-
     // Decide whether to show the tutorial sitrep
     // about building outpost or colony ships.
     bool show = false;

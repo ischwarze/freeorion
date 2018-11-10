@@ -5991,7 +5991,7 @@ TUTORIAL_PRODUCTION_SHIP_SHORT_DESC
 Designing and building a spaceship
 
 TUTORIAL_PRODUCTION_SHIP_TEXT
-'''Congratulations, your mechanical engineers just researched the first technology that permits your empire the construction of a spaceship!
+'''Congratulations, your mechanical engineers researched the first technology that permits your empire the construction of spaceships, and the required [[buildingtype BLD_SHIPYARD_BASE]] has also been completed!
 
 To actually get a ship built, two steps are required: ship design and ship production.
 
@@ -6594,8 +6594,11 @@ SITREP_TUTORIAL_PRODUCTION_YARD
 SITREP_TUTORIAL_FOCUS
 [[TUTORIAL_TITLE]] [[encyclopedia TUTORIAL_FOCUS_TITLE]]
 
-SITREP_TUTORIAL_PRODUCTION_SHIP
-[[TUTORIAL_TITLE]] [[encyclopedia TUTORIAL_PRODUCTION_SHIP_TITLE]]
+SITREP_TUTORIAL_PRODUCTION_SHIP_HULL
+[[TUTORIAL_TITLE]] [[encyclopedia TUTORIAL_PRODUCTION_SHIP_TITLE]]: The new technology %tech% was just discovered.
+
+SITREP_TUTORIAL_PRODUCTION_SHIP_YARD
+[[TUTORIAL_TITLE]] [[encyclopedia TUTORIAL_PRODUCTION_SHIP_TITLE]]: The first [[buildingtype BLD_SHIPYARD_BASE]] was just built.
 
 SITREP_TUTORIAL_PRODUCTION_COLONY
 [[TUTORIAL_TITLE]] [[encyclopedia TUTORIAL_PRODUCTION_COLONY_TITLE]]

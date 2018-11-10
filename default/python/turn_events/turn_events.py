@@ -68,4 +68,75 @@ def execute_turn_events():
                 if monster == fo.invalid_object():
                     print >> sys.stderr, "Turn events: unable to create monster in fleet"
 
+    tutorial_production_ship()
+
     return True
+
+
+def tutorial_production_ship():
+    hull_techs = [
+        "SHP_BASIC_HULL_1",
+        "SHP_SMALLORG_HULL",
+        "SHP_SPACE_FLUX_BUBBLE",
+        "SHP_ASTEROID_HULLS",
+        "SHP_FRC_ENRG_COMP",
+        "SHP_XENTRONIUM_HULL",
+    ]
+    current_turn = fo.current_turn()
+    universe = fo.get_universe()
+
+    # find the oldest basic shipyard built by each empire
+    shipyards_built = {}
+    for building_id in universe.buildingIDs:
+        building = universe.getBuilding(building_id)
+        if building.buildingTypeName != "BLD_SHIPYARD_BASE":
+            print "ignoring", building.buildingTypeName
+            continue;
+        empire_id = building.producedByEmpireID
+        if empire_id not in shipyards_built or \
+                shipyards_built[empire_id] > building.creationTurn:
+            print "empire", empire_id, \
+                "built shipyard in turn", building.creationTurn
+            shipyards_built[empire_id] = building.creationTurn
+
+    for empire_id in fo.get_all_empires():
+        if empire_id not in shipyards_built:
+            print "skipping empire", empire_id, "- built no shipyard"
+            continue
+
+        # find the longest-known hull tech for this empire
+        empire = fo.get_empire(empire_id)
+        print "processing empire", empire_id, empire.name
+        res_techs = empire.researchedTechs
+        turn_first = current_turn + 1
+        print "turn_first starting value:", turn_first
+        for tech in hull_techs:
+            if tech not in res_techs:
+                print tech, "unknown"
+                continue
+            turn = res_techs[tech]
+            print tech, "researched on turn", turn
+            if turn_first > turn:
+                print "reducing turn_first to", turn
+                turn_first = turn
+                tech_first = tech
+        print "turn_first =", turn_first, ", current_turn =", current_turn
+        if turn_first > current_turn:
+            print "no hulls known, skipping sitrep"
+            continue
+
+        if turn_first == current_turn:
+            print tech_first, "is new, generating sitrep"
+            fo.generate_sitrep(empire.empireID,
+                "SITREP_TUTORIAL_PRODUCTION_SHIP_HULL",
+                { "tech": tech_first },
+                "icons/sitrep/beginner_hint.png",
+                "TUTORIAL_HINTS")
+        elif shipyards_built[empire_id] == current_turn:
+            print "shipyard is new, generating sitrep"
+            fo.generate_sitrep(empire.empireID,
+                "SITREP_TUTORIAL_PRODUCTION_SHIP_YARD",
+                "icons/sitrep/beginner_hint.png",
+                "TUTORIAL_HINTS")
+        else:
+            print "nothing is new, skipping sitrep"
