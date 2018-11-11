@@ -91,7 +91,7 @@ def tutorial_production_ship():
         building = universe.getBuilding(building_id)
         if building.buildingTypeName != "BLD_SHIPYARD_BASE":
             print "ignoring", building.buildingTypeName
-            continue;
+            continue
         empire_id = building.producedByEmpireID
         if empire_id not in shipyards_built or \
                 shipyards_built[empire_id] > building.creationTurn:
@@ -127,16 +127,20 @@ def tutorial_production_ship():
 
         if turn_first == current_turn:
             print tech_first, "is new, generating sitrep"
-            fo.generate_sitrep(empire.empireID,
+            fo.generate_sitrep(
+                empire.empireID,
                 "SITREP_TUTORIAL_PRODUCTION_SHIP_HULL",
-                { "tech": tech_first },
+                {"tech": tech_first},
                 "icons/sitrep/beginner_hint.png",
-                "TUTORIAL_HINTS")
+                "TUTORIAL_HINTS"
+            )
         elif shipyards_built[empire_id] == current_turn:
             print "shipyard is new, generating sitrep"
-            fo.generate_sitrep(empire.empireID,
+            fo.generate_sitrep(
+                empire.empireID,
                 "SITREP_TUTORIAL_PRODUCTION_SHIP_YARD",
                 "icons/sitrep/beginner_hint.png",
-                "TUTORIAL_HINTS")
+                "TUTORIAL_HINTS"
+            )
         else:
             print "nothing is new, skipping sitrep"
