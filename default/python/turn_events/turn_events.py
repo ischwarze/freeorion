@@ -68,9 +68,67 @@ def execute_turn_events():
                 if monster == fo.invalid_object():
                     print >> sys.stderr, "Turn events: unable to create monster in fleet"
 
+    tutorial_production_intro()
     tutorial_production_ship()
 
     return True
+
+
+def tutorial_production_intro():
+    # all techs that unlock a building but do not require another tech
+    # that also unlocks a building
+    building_techs = [
+        "GRO_GENETIC_ENG",
+        "LRN_PHYS_BRAIN",
+        "SHP_CONSTRUCTION",
+        "SHP_DOMESTIC_MONSTER",
+        "CON_ASYMP_MATS",
+        "PRO_INDUSTRY_CENTER_I",
+        "SPY_DETECT_2",
+        "PRO_ORBITAL_GEN",
+        "GRO_TERRAFORM",
+        "LRN_GRAVITONICS",
+        "PRO_EXOBOTS",
+        "LRN_SPATIAL_DISTORT_GEN",
+        "PRO_NDIM_ASSMB",
+        "CON_STARGATE",
+        "CON_PLANET_DRIVE",
+    ]
+    current_turn = fo.current_turn()
+    for empire_id in fo.get_all_empires():
+        empire = fo.get_empire(empire_id)
+        res_techs = empire.researchedTechs
+        turn = current_turn + 1
+        for tech in building_techs:
+            if tech not in res_techs:
+                print "production_intro:", empire.name, "does not know", tech
+                continue
+            turn = res_techs[tech]
+            if turn < current_turn:
+                print "production_intro:", \
+                    empire.name, "knows", tech, "since turn", turn
+                break
+            tech_first = tech
+        if turn == current_turn:
+            print "production_intro sending sitrep:", \
+                empire.name, "just discovered", tech_first
+            fo.generate_sitrep(
+                empire.empireID,
+                "SITREP_TUTORIAL_PRODUCTION_INTRO",
+                {"tech": tech_first},
+                "icons/sitrep/beginner_hint.png",
+                "TUTORIAL_HINTS"
+            )
+        elif "SHP_CONSTRUCTION" in res_techs and \
+                res_techs["SHP_CONSTRUCTION"] == current_turn:
+            print "production_intro sending sitrep:", \
+                empire.name, "just discovered shipyard"
+            fo.generate_sitrep(
+                empire.empireID,
+                "SITREP_TUTORIAL_PRODUCTION_YARD",
+                "icons/sitrep/beginner_hint.png",
+                "TUTORIAL_HINTS"
+            )
 
 
 def tutorial_production_ship():
@@ -90,43 +148,43 @@ def tutorial_production_ship():
     for building_id in universe.buildingIDs:
         building = universe.getBuilding(building_id)
         if building.buildingTypeName != "BLD_SHIPYARD_BASE":
-            print "ignoring", building.buildingTypeName
+            print "production_ship: ignoring", building.buildingTypeName
             continue
         empire_id = building.producedByEmpireID
         if empire_id not in shipyards_built or \
                 shipyards_built[empire_id] > building.creationTurn:
-            print "empire", empire_id, \
+            print "production_ship: empire", empire_id, \
                 "built shipyard in turn", building.creationTurn
             shipyards_built[empire_id] = building.creationTurn
 
     for empire_id in fo.get_all_empires():
         if empire_id not in shipyards_built:
-            print "skipping empire", empire_id, "- built no shipyard"
+            print "production_ship sending no sitrep: empire", \
+                empire_id, "has no shipyard"
             continue
 
         # find the longest-known hull tech for this empire
         empire = fo.get_empire(empire_id)
-        print "processing empire", empire_id, empire.name
         res_techs = empire.researchedTechs
         turn_first = current_turn + 1
-        print "turn_first starting value:", turn_first
         for tech in hull_techs:
             if tech not in res_techs:
-                print tech, "unknown"
+                print "production_ship:", empire.name, "does not know", tech
                 continue
             turn = res_techs[tech]
-            print tech, "researched on turn", turn
             if turn_first > turn:
-                print "reducing turn_first to", turn
+                print "production_ship:", \
+                    empire.name, "knows", tech, "since turn", turn
                 turn_first = turn
                 tech_first = tech
-        print "turn_first =", turn_first, ", current_turn =", current_turn
         if turn_first > current_turn:
-            print "no hulls known, skipping sitrep"
+            print "production_ship sending no sitrep:", \
+                empire.name, "does not knows any hulls"
             continue
 
         if turn_first == current_turn:
-            print tech_first, "is new, generating sitrep"
+            print "production_ship sending sitrep:", \
+                empire.name, "just discovered", tech_first
             fo.generate_sitrep(
                 empire.empireID,
                 "SITREP_TUTORIAL_PRODUCTION_SHIP_HULL",
@@ -135,12 +193,11 @@ def tutorial_production_ship():
                 "TUTORIAL_HINTS"
             )
         elif shipyards_built[empire_id] == current_turn:
-            print "shipyard is new, generating sitrep"
+            print "production_ship sending sitrep:", \
+                empire.name, "just built the first shipyard"
             fo.generate_sitrep(
                 empire.empireID,
                 "SITREP_TUTORIAL_PRODUCTION_SHIP_YARD",
                 "icons/sitrep/beginner_hint.png",
                 "TUTORIAL_HINTS"
             )
-        else:
-            print "nothing is new, skipping sitrep"

@@ -1387,18 +1387,6 @@ void Empire::AddBuildingType(const std::string& name) {
         return;
     m_available_building_types.insert(name);
     AddSitRepEntry(CreateBuildingTypeUnlockedSitRep(name));
-
-    // Decide whether to show a tutorial sitrep about building production.
-    auto count = m_available_building_types.size();
-    auto& initial = GetUniverse().InitiallyUnlockedItems();
-    for (auto item = initial.cbegin(); item != initial.cend(); item++)
-        if (item->type == UIT_BUILDING)
-            if (--count == 0)
-                break;
-    if (count == 1)
-        AddSitRepEntry(CreateTutorialSitRep("SITREP_TUTORIAL_PRODUCTION_INTRO"));
-    else if (name == "BLD_SHIPYARD_BASE")
-        AddSitRepEntry(CreateTutorialSitRep("SITREP_TUTORIAL_PRODUCTION_YARD"));
 }
 
 void Empire::AddPartType(const std::string& name) {
