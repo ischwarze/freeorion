@@ -228,7 +228,7 @@ def tutorial_production_ship():
                 empire.name, "does not knows any colonization tech"
             continue
 
-        hull_turn, hull_tech = first_tech(empire, hull_techs)
+        hull_turn, hull_tech = first_tech(empire, hull_techs_internal)
         if hull_turn > current_turn:
             print "production_ship sending no colony sitrep:", \
                 empire.name, "does not knows any hulls with internal slots"
