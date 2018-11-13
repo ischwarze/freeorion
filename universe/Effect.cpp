@@ -3154,7 +3154,6 @@ GenerateSitRepMessage::GenerateSitRepMessage(const std::string& message_string,
                                              MessageParams&& message_parameters,
                                              std::unique_ptr<ValueRef::ValueRefBase<int>>&& recipient_empire_id,
                                              EmpireAffiliationType affiliation,
-                                             int maxshow,
                                              const std::string label,
                                              bool stringtable_lookup) :
     m_message_string(message_string),
@@ -3163,8 +3162,6 @@ GenerateSitRepMessage::GenerateSitRepMessage(const std::string& message_string,
     m_recipient_empire_id(std::move(recipient_empire_id)),
     m_condition(nullptr),
     m_affiliation(affiliation),
-    m_maxshow(maxshow),
-    m_shown(new std::map<int, int>),
     m_label(label),
     m_stringtable_lookup(stringtable_lookup)
 {}
@@ -3174,7 +3171,6 @@ GenerateSitRepMessage::GenerateSitRepMessage(const std::string& message_string,
                                              MessageParams&& message_parameters,
                                              EmpireAffiliationType affiliation,
                                              std::unique_ptr<Condition::ConditionBase>&& condition,
-                                             int maxshow,
                                              const std::string label,
                                              bool stringtable_lookup) :
     m_message_string(message_string),
@@ -3183,8 +3179,6 @@ GenerateSitRepMessage::GenerateSitRepMessage(const std::string& message_string,
     m_recipient_empire_id(nullptr),
     m_condition(std::move(condition)),
     m_affiliation(affiliation),
-    m_maxshow(maxshow),
-    m_shown(new std::map<int, int>),
     m_label(label),
     m_stringtable_lookup(stringtable_lookup)
 {}
@@ -3192,7 +3186,6 @@ GenerateSitRepMessage::GenerateSitRepMessage(const std::string& message_string,
 GenerateSitRepMessage::GenerateSitRepMessage(const std::string& message_string, const std::string& icon,
                                              MessageParams&& message_parameters,
                                              EmpireAffiliationType affiliation,
-                                             int maxshow,
                                              const std::string& label,
                                              bool stringtable_lookup):
     m_message_string(message_string),
@@ -3201,15 +3194,9 @@ GenerateSitRepMessage::GenerateSitRepMessage(const std::string& message_string, 
     m_recipient_empire_id(nullptr),
     m_condition(),
     m_affiliation(affiliation),
-    m_maxshow(maxshow),
-    m_shown(new std::map<int, int>),
     m_label(label),
     m_stringtable_lookup(stringtable_lookup)
 {}
-
-GenerateSitRepMessage::~GenerateSitRepMessage() {
-    delete m_shown;
-}
 
 void GenerateSitRepMessage::Execute(const ScriptingContext& context) const {
     int recipient_id = ALL_EMPIRES;
@@ -3316,16 +3303,6 @@ void GenerateSitRepMessage::Execute(const ScriptingContext& context) const {
         Empire* empire = GetEmpire(empire_id);
         if (!empire)
             continue;
-        if (m_maxshow) {
-            int& shown = (*m_shown)[empire_id];
-            DebugLogger() << "GenerateSitRepMessage::Execute: " <<
-                empire->Name() <<
-                " (" << (shown + 1) << "/" << m_maxshow << ") " <<
-                m_message_string;
-	    if (shown >= m_maxshow)
-                break;
-            shown++;
-        }
         empire->AddSitRepEntry(CreateSitRep(m_message_string, sitrep_turn, m_icon,
                                             parameter_tag_values, m_label, m_stringtable_lookup));
 

@@ -41,7 +41,6 @@ private:
 //! events.
 //!
 //! @{
-SitRepEntry CreateTutorialSitRep(const char* sitrep_name);
 SitRepEntry CreateTechResearchedSitRep(const std::string& tech_name);
 SitRepEntry CreateShipBuiltSitRep(int ship_id, int system_id, int shipdesign_id);
 SitRepEntry CreateShipBlockBuiltSitRep(int system_id, int shipdesign_id, int number);

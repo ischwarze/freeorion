@@ -20,7 +20,6 @@ namespace parse { namespace detail {
                 EmpireAffiliationType,
                 std::string,
                 bool,
-                int,
                 value_ref_payload<int>,
                 parse::detail::MovableEnvelope<Condition::ConditionBase>
                 >

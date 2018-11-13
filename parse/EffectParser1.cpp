@@ -19,7 +19,6 @@ namespace parse { namespace detail {
         const PassedMessageParams& message_parameters,
         const MovableEnvelope<ValueRef::ValueRefBase<int>>& recipient_empire_id,
         EmpireAffiliationType affiliation,
-        int maxshow,
         const std::string label,
         bool stringtable_lookup,
         bool& pass)
@@ -31,7 +30,6 @@ namespace parse { namespace detail {
                 OpenEnvelopes(message_parameters, pass),
                 recipient_empire_id.OpenEnvelope(pass),
                 affiliation,
-                maxshow,
                 label,
                 stringtable_lookup
             )
@@ -43,7 +41,6 @@ namespace parse { namespace detail {
         const PassedMessageParams& message_parameters,
         EmpireAffiliationType affiliation,
         const parse::detail::condition_payload& condition,
-        int maxshow,
         const std::string label,
         bool stringtable_lookup,
         bool& pass)
@@ -55,7 +52,6 @@ namespace parse { namespace detail {
                 OpenEnvelopes(message_parameters, pass),
                 affiliation,
                 condition.OpenEnvelope(pass),
-                maxshow,
                 label,
                 stringtable_lookup
             )
@@ -66,7 +62,6 @@ namespace parse { namespace detail {
         const std::string& message_string, const std::string& icon,
         const PassedMessageParams& message_parameters,
         EmpireAffiliationType affiliation,
-        int maxshow,
         const std::string& label,
         bool stringtable_lookup,
         bool& pass)
@@ -77,16 +72,15 @@ namespace parse { namespace detail {
                 icon,
                 OpenEnvelopes(message_parameters, pass),
                 affiliation,
-                maxshow,
                 label,
                 stringtable_lookup
             )
         );
     }
 
-    BOOST_PHOENIX_ADAPT_FUNCTION(effect_payload, construct_GenerateSitRepMessage1_, construct_GenerateSitRepMessage1, 9)
-    BOOST_PHOENIX_ADAPT_FUNCTION(effect_payload, construct_GenerateSitRepMessage2_, construct_GenerateSitRepMessage2, 9)
-    BOOST_PHOENIX_ADAPT_FUNCTION(effect_payload, construct_GenerateSitRepMessage3_, construct_GenerateSitRepMessage3, 8)
+    BOOST_PHOENIX_ADAPT_FUNCTION(effect_payload, construct_GenerateSitRepMessage1_, construct_GenerateSitRepMessage1, 8)
+    BOOST_PHOENIX_ADAPT_FUNCTION(effect_payload, construct_GenerateSitRepMessage2_, construct_GenerateSitRepMessage2, 8)
+    BOOST_PHOENIX_ADAPT_FUNCTION(effect_payload, construct_GenerateSitRepMessage3_, construct_GenerateSitRepMessage3, 7)
 
 
     effect_parser_rules_1::effect_parser_rules_1(
@@ -110,7 +104,6 @@ namespace parse { namespace detail {
         qi::_d_type _d;
         qi::_e_type _e;
         qi::_f_type _f;
-        qi::_g_type _g;
         qi::_val_type _val;
         qi::eps_type eps;
         qi::_pass_type _pass;
@@ -173,7 +166,6 @@ namespace parse { namespace detail {
             )
             >  -(label(tok.Icon_)       >  tok.string [ _b = _1 ] )
             >  -(label(tok.Parameters_) >  one_or_more_string_and_string_ref_pair [_c = _1] )
-            >  -(label(tok.MaxShow_)    >  tok.int_ [ _g = _1 ] )
             >   (
                 (   // empire id specified, optionally with an affiliation type:
                     // useful to specify a single recipient empire, or the allies
@@ -184,19 +176,19 @@ namespace parse { namespace detail {
                      >>  label(tok.Empire_)
                     ) > int_rules.expr
 
-                    [ _val = construct_GenerateSitRepMessage1_(_a, _b, _c, _1, _d, _g, _e, _f, _pass) ]
+                    [ _val = construct_GenerateSitRepMessage1_(_a, _b, _c, _1, _d, _e, _f, _pass) ]
                 )
                 |   (   // condition specified, with an affiliation type of CanSee:
                     // used to specify CanSee affiliation
                     (label(tok.Affiliation_) >>  tok.CanSee_)
                     >   label(tok.Condition_)   >   condition_parser
-                    [ _val = construct_GenerateSitRepMessage2_(_a, _b, _c, AFFIL_CAN_SEE, _1, _g, _e, _f, _pass) ]
+                    [ _val = construct_GenerateSitRepMessage2_(_a, _b, _c, AFFIL_CAN_SEE, _1, _e, _f, _pass) ]
                 )
                 |   (   // condition specified, with an affiliation type of CanSee:
                     // used to specify CanSee affiliation
                     (label(tok.Affiliation_) >>  tok.Human_)
                     >   label(tok.Condition_)   >   condition_parser
-                    [ _val = construct_GenerateSitRepMessage2_(_a, _b, _c, AFFIL_HUMAN, _1, _g, _e, _f, _pass) ]
+                    [ _val = construct_GenerateSitRepMessage2_(_a, _b, _c, AFFIL_HUMAN, _1, _e, _f, _pass) ]
                 )
                 |   (   // no empire id or condition specified, with or without an
                     // affiliation type: useful to specify no or all empires
@@ -205,7 +197,7 @@ namespace parse { namespace detail {
                     )
                     [ _val = construct_GenerateSitRepMessage3_(
                             _a, _b, _c,
-                            _d, _g, _e, _f, _pass) ]
+                            _d, _e, _f, _pass) ]
                 )
 
             )

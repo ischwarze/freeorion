@@ -14,19 +14,6 @@ Part
 // Population consumption is commented out until the discrepancy between outpost
 // population consumption and this consumption is regularized.
 //  consumption = Population consumption = 1 condition = Source
-    effectsgroups = [
-        EffectsGroup
-            scope = Source
-            activation = Source
-            effects = [
-                GenerateSitrepMessage
-                    message = "SITREP_TUTORIAL_COLONY_POD"
-                    label = "TUTORIAL_HINTS"
-                    icon = "icons/sitrep/beginner_hint.png"
-                    maxshow = 1
-                    empire = Source.Owner
-            ]
-    ]
     icon = "icons/ship_parts/colony_pod.png"
 
 #include "/scripting/common/upkeep.macros"

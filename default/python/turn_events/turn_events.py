@@ -70,6 +70,7 @@ def execute_turn_events():
 
     tutorial_production_intro()
     tutorial_production_ship()
+    tutotial_colony_pod()
 
     return True
 
@@ -263,3 +264,43 @@ def tutorial_production_ship():
                 "icons/sitrep/beginner_hint.png",
                 "TUTORIAL_HINTS"
             )
+
+
+def tutotial_colony_pod():
+    for empire_id in fo.get_all_empires():
+        empire = fo.get_empire(empire_id)
+
+        # Check whether this sitrep was already shown to this empire.
+        num_sitreps = empire.numSitReps(fo.INVALID_GAME_TURN)
+        sitrep_index = 0
+        while sitrep_index < num_sitreps:
+            sitrep = empire.getSitRep(sitrep_index)
+            if sitrep.typeString == "SITREP_TUTORIAL_OUTPOST_POD" or \
+                    sitrep.typeString == "SITREP_TUTORIAL_COLONY_POD":
+                print "tutotial_colony_pod shown to", empire.name, \
+                    "on turn", sitrep.getTurn
+                break
+            sitrep_index = sitrep_index + 1
+        if sitrep_index < num_sitreps:
+            continue
+
+        owned = empire.shipPartTypesOwned
+        if "CO_OUTPOST_POD" in owned:
+            print "sending sitrep:", empire.name, "has an outpost pod"
+            fo.generate_sitrep(
+                empire.empireID,
+                "SITREP_TUTORIAL_OUTPOST_POD",
+                "icons/sitrep/beginner_hint.png",
+                "TUTORIAL_HINTS"
+            )
+        elif "CO_COLONY_POD" in owned or "CO_SUSPEND_ANIM_POD" in owned:
+            print "sending sitrep:", empire.name, "has a colony pod"
+            fo.generate_sitrep(
+                empire.empireID,
+                "SITREP_TUTORIAL_COLONY_POD",
+                "icons/sitrep/beginner_hint.png",
+                "TUTORIAL_HINTS"
+            )
+        else:
+            print "not sending sitrep:", empire.name, \
+                "has neither colony nor outpost pods"

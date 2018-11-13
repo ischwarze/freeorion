@@ -1392,5 +1392,7 @@ namespace FreeOrionPython {
         def("planet_make_outpost",                  PlanetMakeOutpost);
         def("planet_make_colony",                   PlanetMakeColony);
         def("planet_cardinal_suffix",               PlanetCardinalSuffix);
+
+        boost::python::scope().attr("INVALID_GAME_TURN") = INVALID_GAME_TURN;
     }
 }
