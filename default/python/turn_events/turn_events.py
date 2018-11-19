@@ -87,8 +87,8 @@ def tutorial_events():
         if empire_id in shipyards_built or sent == 0:
             shown = tutorial_find_shown(empire)
         if empire_id in shipyards_built:
-            sent += tutorial_production_ship(empire,
-                shipyards_built[empire_id] == current_turn)
+            sent += tutorial_production_ship(
+                empire, shipyards_built[empire_id] == current_turn)
             if "colony_pod" not in shown:
                 sent += tutotial_colony_pod(empire)
         if sent == 0 and "focus" not in shown:
